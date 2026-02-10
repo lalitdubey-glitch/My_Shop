@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyShop - Freshness Delivered</title>
+    <link rel="icon" type="image/png" href="assets/shop_favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts (Local) -->
+    <link rel="stylesheet" href="lib/googlefonts/outfit.css">
+    <!-- Font Awesome (Local) -->
+    <link rel="stylesheet" href="lib/fontawesome/css/all.min.css">
+    <!-- SweetAlert2 (Local) -->
+    <script src="lib/sweetalert2/sweetalert2.all.min.js"></script>
+</head>
+
+<body>
+    <!-- Homepage Loader -->
+    <div id="homeLoader" class="home-loader">
+        <div class="loading-text">
+            <span>L</span><span>O</span><span>A</span><span>D</span><span>I</span><span>N</span><span>G</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo">
+                <h1><i class="fa-solid fa-leaf"></i> MyShop</h1>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search for products / उत्पाद खोजें..."
+                    autocomplete="off">
+                <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <div id="searchSuggestions" class="search-suggestions"></div>
+            </div>
+            <div class="cart-icons-wrapper" style="display: flex; gap: 20px; align-items: center;">
+                <a href="admin.html" id="adminLink" title="Admin Panel"
+                    style="color: var(--primary-color); font-size: 1.5rem; text-decoration: none;">
+                    <i class="fa-solid fa-user-shield"></i>
+                </a>
+                <div class="cart-icon" id="cartBtn">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span id="cartCount">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="slider-container">
+            <div class="slides">
+                <div class="slide"><img src="assets/images/slider1.jpg" alt="Fresh Produce"></div>
+                <div class="slide"><img src="assets/images/slider2.jpg" alt="Stationary Items"></div>
+                <div class="slide"><img src="assets/images/slider3.jpg" alt="Daily Needs"></div>
+                <div class="slide"><img src="assets/images/slider4.jpg" alt="Green Vegetables"></div>
+            </div>
+            <div class="slider-dots">
+                <span class="dot active"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
+        <div class="container hero-content-container">
+            <div class="hero-content">
+                <h2>Freshness Delivered to Your Doorstep</h2>
+                <p>Quality groceries, fruits, and vegetables at the best prices.</p>
+                <a href="#products" class="btn-primary" style="pointer-events: auto;">Shop Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories section-padding">
+        <div class="container">
+            <h2 class="section-title">Shop by Category</h2>
+            <div class="category-scroll-container">
+                <div class="category-card active" data-category="all">
+                    <div>
+                        <i class="fa-solid fa-border-all" style="font-size: 4rem; color: var(--primary-color);"></i>
+                    </div>
+                    <h3>All Items</h3>
+                </div>
+                <!-- Categories will be loaded dynamically from Google Sheets -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Products -->
+    <section id="products" class="products section-padding">
+        <div class="container">
+            <h2 class="section-title">Our Products</h2>
+            <div id="productGrid" class="product-grid">
+                <!-- Products will be injected here via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="map-section section-padding">
+        <div class="container">
+            <h2 class="section-title">Locate Us</h2>
+            <div class="map-container">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14456.887258079828!2d82.5644!3d25.2936!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjXCsDE3JzM3LjAiTiA4MsKwMzMnNTEuOCJF!5e0!3m2!1sen!2sin!4v1625634589000!5m2!1sen!2sin"
+                    width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy">
+                </iframe>
+                <div class="address-box">
+                    <h3><i class="fa-solid fa-location-dot"></i> My Shop</h3>
+                    <p>Dhaskari, Bhadohi, Uttar Pradesh</p>
+                    <p>India</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feedback Section -->
+    <section class="feedback-section section-padding">
+        <div class="container">
+            <h2 class="section-title">Send Us Feedback / हमें फीडबैक भेजें</h2>
+            <div class="feedback-container">
+                <p>We value your feedback! Share your experience with us.</p>
+                <p class="hindi-subtitle">आपकी राय हमारे लिए महत्वपूर्ण है। अपना अनुभव साझा करें।</p>
+
+                <div class="feedback-input-wrapper">
+                    <textarea id="feedbackText" placeholder="Write your feedback here... / अपना फीडबैक यहाँ लिखें..."
+                        rows="5"></textarea>
+
+                    <div id="thankYouMessage" class="thank-you-message" style="display: none;">
+                        <i class="fa-solid fa-heart"></i>
+                        <h3>Thank You! / धन्यवाद!</h3>
+                        <p>आपकी प्रतिक्रिया हमारे लिए अनमोल है। आपका समय देने के लिए दिल से शुक्रिया! 🙏</p>
+                        <p class="english-thanks">Your feedback means the world to us. Thank you for taking the time!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="feedback-buttons">
+                    <button id="sendWhatsAppFeedback" class="feedback-btn whatsapp-btn">
+                        <i class="fa-brands fa-whatsapp"></i> Send via WhatsApp
+                    </button>
+                    <button id="sendEmailFeedback" class="feedback-btn email-btn">
+                        <i class="fa-solid fa-envelope"></i> Send via Email
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>My Shop</h3>
+                    <p>Your trusted local kirana store.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact</h3>
+                    <p><i class="fa-solid fa-phone"></i> +91 6393457594</p>
+                    <p><i class="fa-solid fa-envelope"></i> lalitdubey8626@gmail.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 My Shop. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="cart-modal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h2>Your Cart</h2>
+                <button id="closeCart" class="close-btn">&times;</button>
+            </div>
+            <div class="cart-items" id="cartItems">
+                <!-- Cart items will go here -->
+                <div class="empty-cart-msg">Your cart is empty</div>
+            </div>
+            <div class="cart-footer">
+                <div class="total-row">
+                    <span>Total:</span>
+                    <span id="cartTotal">₹0</span>
+                </div>
+                <div class="user-details-form">
+                    <input type="text" id="userName" placeholder="Your Name / आपका नाम" required>
+                    <input type="tel" id="userPhone" placeholder="Mobile Number / मोबाइल नंबर" required>
+                    <div class="address-group">
+                        <textarea id="userAddress" placeholder="Address / पता (e.g. Village, Landmark)"
+                            required></textarea>
+                        <button id="locationBtn" title="Use Current Location"><i
+                                class="fa-solid fa-location-crosshairs"></i></button>
+                    </div>
+                </div>
+            </div>
+            <button id="checkoutBtn" class="btn-whatsapp">
+                <i class="fa-brands fa-whatsapp"></i> Order via WhatsApp
+            </button>
+        </div>
+    </div>
+    </div>
+    <div id="overlay" class="overlay"></div>
+
+    <script src="lib/jquery/jquery.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MyShop</title>
+    <link rel="icon" type="image/png" href="assets/shop_favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="lib/googlefonts/outfit.css">
+    <link rel="stylesheet" href="lib/fontawesome/css/all.min.css">
+    <!-- SweetAlert2 (Local) -->
+    <script src="lib/sweetalert2/sweetalert2.all.min.js"></script>
+</head>
+
+<body>
+    <!-- Admin Loader -->
+    <div id="adminLoader" class="admin-loader" style="display: none;">
+        <div class="spinner"></div>
+        <p>Loading Data...</p>
+    </div>
+
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-box">
+            <i class="fa-solid fa-user-shield" style="font-size: 3.5rem; color: #2e7d32; margin-bottom: 20px;"></i>
+            <h2>Admin Login</h2>
+            <p class="subtitle">Please enter your credentials to access the dashboard.</p>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="adminUser" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="adminPass" placeholder="Password">
+            </div>
+            <button id="loginSubmit" class="btn-primary">Login to Dashboard</button>
+            <p id="loginError" style="display: none;">Invalid username or password!</p>
+            <a href="index.html" class="back-link">Return to Store</a>
+        </div>
+    </div>
+
+    <header class="header" id="adminHeader" style="display: none;">
+        <div class="container header-container">
+            <div class="logo">
+                <h1><i class="fa-solid fa-gauge-high"></i> Admin Dashboard</h1>
+            </div>
+            <nav class="admin-nav">
+                <a href="index.html" class="btn-secondary"><i class="fa-solid fa-house"></i> View Shop</a>
+                <button id="logoutBtn" class="btn-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container admin-container" id="adminMain" style="display: none;">
+        <div class="admin-sidebar">
+            <button class="tab-btn active" data-tab="products-tab"><i class="fa-solid fa-box"></i> Products</button>
+            <button class="tab-btn" data-tab="categories-tab"><i class="fa-solid fa-list-ul"></i> Categories</button>
+        </div>
+
+        <div class="admin-content">
+            <!-- Products Tab -->
+            <div id="products-tab" class="tab-content active">
+                <div class="content-header" style="flex-direction: column; align-items: flex-start; gap: 20px;">
+                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                        <h2>Manage Products</h2>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <div class="search-container" style="position: relative;">
+                                <i class="fa-solid fa-magnifying-glass"
+                                    style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #666;"></i>
+                                <input type="text" id="adminProductSearch" placeholder="Search products..."
+                                    style="padding: 8px 10px 8px 35px; border-radius: 20px; border: 1px solid #ddd; outline: none; width: 250px;">
+                            </div>
+                            <button class="btn-primary" id="addNewProduct"><i class="fa-solid fa-plus"></i> Add
+                                Product</button>
+                        </div>
+                    </div>
+
+                    <!-- Category Swipe Filter -->
+                    <div class="admin-category-filter">
+                        <div class="filter-scroll" id="adminCategoryFilter">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="productsTable">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Unit</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminProductList"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Categories Tab -->
+            <div id="categories-tab" class="tab-content">
+                <div class="content-header">
+                    <h2>Manage Categories</h2>
+                    <button class="btn-primary" id="addNewCategory"><i class="fa-solid fa-plus"></i> Add
+                        Category</button>
+                </div>
+                <div class="table-container">
+                    <table id="categoriesTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Slug</th>
+                                <th>Image/Icon</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminCategoryList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for Product Add/Edit -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="closeModal('productModal')">&times;</button>
+            <h2 id="productModalTitle">Add New Product</h2>
+            <form id="productForm">
+                <input type="hidden" id="editProductId">
+                <div class="form-group">
+                    <label>English Name</label>
+                    <input type="text" id="pNameEn" required>
+                </div>
+                <div class="form-group">
+                    <label>Hindi Name</label>
+                    <input type="text" id="pNameHi" required>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="pCategory" required></select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price (₹)</label>
+                        <input type="number" id="pPrice" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Unit</label>
+                        <input type="text" id="pUnit" placeholder="e.g. kg, pc" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Product Image</label>
+                    <div class="image-picker-container" id="productImagePicker">
+                        <div class="picker-search-box">
+                            <input type="text" class="picker-search" placeholder="Search or paste URL...">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                        <div class="picker-dropdown">
+                            <div class="image-list">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+                        <input type="hidden" id="pImage" value="">
+                    </div>
+                    <p class="path-hint"><i class="fa-solid fa-circle-info"></i> <b>How to add manually:</b>
+                        <code>Product_Image/category/image.jpg</code>
+                    </p>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-cancel" onclick="closeModal('productModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Category Add/Edit -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="closeModal('categoryModal')">&times;</button>
+            <h2 id="categoryModalTitle">Add New Category</h2>
+            <form id="categoryForm">
+                <input type="hidden" id="editCategoryId">
+                <div class="form-group">
+                    <label>Category Name</label>
+                    <input type="text" id="cName" required>
+                </div>
+                <div class="form-group">
+                    <label>Slug (internal ID)</label>
+                    <input type="text" id="cSlug" required>
+                </div>
+                <div class="form-group">
+                    <label>Type (icon or image)</label>
+                    <select id="cType">
+                        <option value="image">Image Path</option>
+                        <option value="icon">FontAwesome Icon Class</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label id="cValueLabel">Category Image/Icon</label>
+                    <div class="image-picker-container" id="categoryValuePicker">
+                        <div class="picker-search-box">
+                            <input type="text" class="picker-search" placeholder="Search images or icons...">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                        <div class="picker-dropdown">
+                            <div class="image-list">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+                        <input type="hidden" id="cValue" value="">
+                    </div>
+                    <p class="path-hint"><i class="fa-solid fa-circle-info"></i> <b>How to add manually:</b>
+                        <code>category_image/your_image.png</code> or use FontAwesome class.
+                    </p>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-cancel" onclick="closeModal('categoryModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="lib/jquery/jquery.min.js"></script>
+    <script src="admin.js"></script>
+</body>
+
+</html>
