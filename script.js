@@ -7,7 +7,7 @@ $(document).ready(function () {
     const itemsPerPage = 16;
 
     // --- Google Apps Script Config ---
-    const API_URL = "https://script.google.com/macros/s/AKfycbwsqKmkGBSyqTGgYs1NZ2ymaQ4BBf1PgoTlf5TwyoIY1ZzmD4yrgpA17ikwKxGftGfx6w/exec";
+    const API_URL = "My_API_URL";
 
     // --- Data Management (Google Sheets Sync) ---
     function loadShopData() {
