@@ -337,6 +337,14 @@ $(document).ready(function () {
         }
     });
 
+    // Name Restriction (3-20 letters only)
+    $('#userName').on('input', function () {
+        this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // Letters and spaces only
+        if (this.value.length > 30) {
+            this.value = this.value.slice(0, 30); // Max 30 characters
+        }
+    });
+
     // Location Button
     $('#locationBtn').click(function () {
         if (navigator.geolocation) {
@@ -345,7 +353,18 @@ $(document).ready(function () {
                 (position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
-                    $('#userAddress').val(`My Location: https://www.google.com/maps?q=${lat},${lon}\n` + $('#userAddress').val());
+                    const newLocation = `My Location: https://www.google.com/maps?q=${lat},${lon}`;
+                    let currentAddress = $('#userAddress').val();
+
+                    // Replace existing google maps link if present, or prepend new one
+                    const mapRegex = /My Location: https:\/\/www\.google\.com\/maps\?q=[-0-9.,]+(\n)?/;
+                    if (mapRegex.test(currentAddress)) {
+                        currentAddress = currentAddress.replace(mapRegex, newLocation + (currentAddress.match(mapRegex)[1] || ""));
+                    } else {
+                        currentAddress = newLocation + "\n" + currentAddress;
+                    }
+
+                    $('#userAddress').val(currentAddress.trim());
                     $(this).html('<i class="fa-solid fa-check" style="color: #2e7d32;"></i>');
                     setTimeout(() => {
                         $(this).html('<i class="fa-solid fa-location-crosshairs"></i>');
@@ -355,7 +374,7 @@ $(document).ready(function () {
                         title: 'Location Added',
                         text: 'Your current location has been added to the address field.',
                         timer: 2000,
-                        showConfirmButton: false
+                        showConfirmButton: true
                     });
                 },
                 (error) => {
@@ -363,7 +382,11 @@ $(document).ready(function () {
                     Swal.fire({
                         icon: 'error',
                         title: 'Location Error',
-                        text: 'Unable to get your location. Please type it manually.'
+                        text: 'Unable to get your location. Please type it manually.',
+                        cancelButtonText: 'OK',
+                        cancelButtonColor: 'red',
+                        showCancelButton: true,
+
                     });
                 }
             );
@@ -387,8 +410,13 @@ $(document).ready(function () {
         const address = $('#userAddress').val().trim();
 
         // Validations
-        if (!name || name.length < 3) {
-            return Swal.fire({ icon: 'error', title: 'Invalid Name', text: 'Please enter your full name (at least 3 characters).' });
+        const nameRegex = /^[a-zA-Z\s]+$/;
+        if (!name || name.length < 3 || name.length > 20 || !nameRegex.test(name)) {
+            return Swal.fire({
+                icon: 'error',
+                title: 'Invalid Name',
+                text: 'Name should be between 3 to 20 characters and contain only letters. / नाम 3 से 20 अक्षरों के बीच और केवल अक्षरों का होना चाहिए।'
+            });
         }
 
         const phoneRegex = /^[6-9]\d{9}$/;
